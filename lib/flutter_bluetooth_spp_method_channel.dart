@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -10,8 +12,8 @@ class MethodChannelFlutterBluetoothSpp extends FlutterBluetoothSppPlatform {
   final methodChannel = const MethodChannel('flutter_bluetooth_spp');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<bool> requestPermissions() async {
+    final state = await methodChannel.invokeMethod<bool>('requestPermissions');
+    return state ?? false;
   }
 }

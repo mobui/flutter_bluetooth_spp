@@ -23,7 +23,7 @@ abstract class FlutterBluetoothSppPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
+  Future<bool> requestPermissions() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

@@ -8,8 +8,12 @@ class MockFlutterBluetoothSppPlatform
     with MockPlatformInterfaceMixin
     implements FlutterBluetoothSppPlatform {
 
+
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<bool> requestPermissions() {
+    // TODO: implement requestPermissions
+    throw UnimplementedError();
+  }
 }
 
 void main() {
@@ -24,6 +28,6 @@ void main() {
     MockFlutterBluetoothSppPlatform fakePlatform = MockFlutterBluetoothSppPlatform();
     FlutterBluetoothSppPlatform.instance = fakePlatform;
 
-    expect(await flutterBluetoothSppPlugin.getPlatformVersion(), '42');
+    expect(await flutterBluetoothSppPlugin.requestPermissions(), '42');
   });
 }

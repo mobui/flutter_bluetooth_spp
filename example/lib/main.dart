@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _flutterBluetoothSppPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          (await _flutterBluetoothSppPlugin.requestPermissions()).toString();
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
