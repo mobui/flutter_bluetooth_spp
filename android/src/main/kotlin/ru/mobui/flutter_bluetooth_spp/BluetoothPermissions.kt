@@ -16,9 +16,11 @@ import kotlinx.coroutines.flow.flow
 
 
 
-object BluetoothPermissions: PluginRegistry.RequestPermissionsResultListener {
+class BluetoothPermissions: PluginRegistry.RequestPermissionsResultListener {
+    companion object {
+        const val REQUEST_CODE = 1001
+    }
 
-    const val REQUEST_CODE = 1001
 
     private var permissionResult: ((granted: Boolean) -> Unit)? = null
 

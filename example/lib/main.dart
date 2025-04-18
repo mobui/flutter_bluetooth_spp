@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_spp/flutter_bluetooth_spp.dart';
 
 void main() {
@@ -32,9 +31,9 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          (await _flutterBluetoothSppPlugin.requestPermissions()).toString();
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+          (await _flutterBluetoothSppPlugin.getBondedDevices()).toString();
+    } on Exception catch(e)  {
+      platformVersion = e.toString();
     }
 
     // If the widget was removed from the tree while the asynchronous platform

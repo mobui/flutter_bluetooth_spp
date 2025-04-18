@@ -14,6 +14,30 @@ class MockFlutterBluetoothSppPlatform
     // TODO: implement requestPermissions
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<Device>> getBondedDevices() {
+    // TODO: implement getBondedDevices
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Stream<String>>  connectToDevice(String address, {String charset = "UTF-8"}) {
+    // TODO: implement connectToDevice
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> disconnect() {
+    // TODO: implement disconnect
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Device?> getConnectedDevice() {
+    // TODO: implement getConnectedDevice
+    throw UnimplementedError();
+  }
 }
 
 void main() {
