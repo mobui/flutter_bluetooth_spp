@@ -5,22 +5,15 @@ import android.app.Activity
 
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.flutter.plugin.common.PluginRegistry
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flow
-
 
 
 class BluetoothPermissions: PluginRegistry.RequestPermissionsResultListener {
     companion object {
         const val REQUEST_CODE = 1001
     }
-
 
     private var permissionResult: ((granted: Boolean) -> Unit)? = null
 
@@ -35,13 +28,12 @@ class BluetoothPermissions: PluginRegistry.RequestPermissionsResultListener {
         }
     }.toTypedArray()
 
-
     public fun checkBluetoothPermissions(context: Activity, permissionResult: ((granted: Boolean) -> Unit)): Unit {
         this.permissionResult = permissionResult
         if (bluetoothPermissions.all {
                 ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
             }) {
-            permissionResult?.invoke(true)
+            permissionResult.invoke(true)
         } else {
             ActivityCompat.requestPermissions(context, bluetoothPermissions, REQUEST_CODE)
         }

@@ -25,11 +25,18 @@ class _MyAppState extends State<MyApp> {
   String dropdownValue = '';
   List<String> logList = [];
   List<MenuEntry> menuEntries = [];
+  String connectedDevice = "";
+  late Timer timer;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    timer = Timer.periodic(Duration(seconds: 1), (_) async {
+      final device = await _flutterBluetoothSppPlugin.getConnectedDevice();
+      connectedDevice = "${device?.name ?? "-"} ${device?.address ?? "-"}";
+      setState(() {});
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -62,7 +69,7 @@ class _MyAppState extends State<MyApp> {
             setState(() {});
         } );
       } catch (e){
-
+        setState(() {});
     }
   }
 
@@ -72,6 +79,14 @@ class _MyAppState extends State<MyApp> {
       await _flutterBluetoothSppPlugin.disconnect();
       } catch (e){
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    timer.cancel();
+    subs?.cancel();
+    _flutterBluetoothSppPlugin.disconnect();
   }
 
   @override
@@ -111,6 +126,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ],
               ),
+              Text(connectedDevice),
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(8),

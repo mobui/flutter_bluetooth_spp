@@ -3,6 +3,7 @@ package ru.mobui.flutter_bluetooth_spp
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.content.Context
 import androidx.core.content.ContextCompat.getSystemService
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -26,10 +27,7 @@ class FlutterBluetoothSppPlugin : FlutterPlugin, MethodCallHandler, ActivityAwar
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         // bluetoothAdapter
-        val bluetoothManager: BluetoothManager? =
-            getSystemService(flutterPluginBinding.applicationContext, BluetoothManager::class.java)
-        bluetoothAdapter = bluetoothManager?.adapter
-        bluetoothConnector = BluetoothConnector(bluetoothAdapter)
+        bluetoothAdapter = getBluetoothAdapter(flutterPluginBinding.applicationContext)
         // MethodChannel
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_bluetooth_spp")
         channel.setMethodCallHandler(this)
@@ -45,6 +43,12 @@ class FlutterBluetoothSppPlugin : FlutterPlugin, MethodCallHandler, ActivityAwar
                 dataSink = null
             }
         })
+    }
+
+    private fun getBluetoothAdapter(context: Context): BluetoothAdapter? {
+        val bluetoothManager: BluetoothManager? =
+            getSystemService(context, BluetoothManager::class.java)
+        return bluetoothManager?.adapter
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -106,14 +110,17 @@ class FlutterBluetoothSppPlugin : FlutterPlugin, MethodCallHandler, ActivityAwar
     }
 
     private fun connectToDevice(result: Result, address: String?, charset: String?) {
+        val charset =  Charset.forName(charset ?: "UTF-8");
         if (address == null) {
             result.error("INVALID_ADDRESS", "Invalid address", null)
             return
         }
         try {
-            bluetoothConnector?.connect(address, Charset.forName(charset ?: "UTF-8")) {
+            bluetoothConnector?.disconnect()
+            bluetoothConnector = BluetoothConnector(bluetoothAdapter, address,charset).connect{
                 dataSink?.success(it)
             }
+            result.success(true)
         } catch (e: Exception) {
             result.error("CONNECT_ERROR", "Error connecting", e)
         }
@@ -123,6 +130,7 @@ class FlutterBluetoothSppPlugin : FlutterPlugin, MethodCallHandler, ActivityAwar
     private fun disconnect(result: Result) {
         try {
             bluetoothConnector?.disconnect()
+            bluetoothConnector = null;
             result.success(true)
         } catch (e:Exception) {
             result.error("DISCONNECT_ERROR", "Error disconnecting", e)
